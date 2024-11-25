@@ -1,7 +1,12 @@
-# Northcoders News API
+# My News
 
-For instructions, please head over to [L2C NC News](https://l2c.northcoders.com/courses/be/nc-news).
+Welcome to My News.
 
+# Project desription
+
+
+# Project setup
+- Add both .env.test and .env.development files in the root directory of this project, with `PGDATABASE=<database_name>` and `PGDATABASE=<database_name>-test` in the respective files.
 
 
 --- 
