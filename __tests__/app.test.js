@@ -105,7 +105,7 @@ describe("GET /api/articles", () => {
           comment_count: expect.any(String),
           article_img_url:expect.any(String)
         })
-        expect(articles).toBeSortedBy(articles.created_at)
+        expect(articles).toBeSortedBy("created_at", { descending: true })
       })
     })
   })
@@ -115,6 +115,44 @@ describe("GET /api/articles", () => {
     .expect(200)
     .then(({ body: { articles } }) => {
       expect(articles[0].comment_count).toEqual("2")
+    })
+  })
+})
+
+describe("GET /api/articles/:article_id/comments", () => {
+  test("200: Responds with an array of comments for the given article_id with the correct properties, sorted by date descending", () => {
+    return request(app)
+    .get("/api/articles/1/comments")
+    .expect(200)
+    .then(({ body: { comments } }) => {
+      expect(comments.length).toBe(11)
+      comments.forEach((comment) => {
+        expect(comment).toMatchObject({
+          comment_id: expect.any(Number),
+          votes: expect.any(Number),
+          created_at: expect.any(String),
+          author: expect.any(String),
+          body: expect.any(String),
+          article_id: expect.any(Number)
+        })
+        expect(comments).toBeSortedBy("created_at", { descending: true })
+      })
+    })
+  })
+  test("200: Responds with an empty array when given a valid article_id with no comments", () => {
+    return request(app)
+    .get("/api/articles/2/comments")
+    .expect(200)
+    .then(({ body: { comments } }) => {
+      expect(comments.length).toBe(0)
+    })
+  })
+  test("404: Responds with message when given a valid but non-existent article_id", () => {
+    return request(app)
+    .get("/api/articles/999/comments")
+    .expect(404)
+    .then(({ body: { msg } }) => {
+      expect(msg).toBe("Article_id does not exist")
     })
   })
 })
