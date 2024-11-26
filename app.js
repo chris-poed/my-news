@@ -2,36 +2,30 @@ const express = require("express")
 const  { 
     getApi,
     getTopics,
-    getArticle
+    getArticle,
+    getArticles
 } = require('./controllers/api.controller')
+
+const { //endpointErrorHandler, 
+    postgresErrorHandler, 
+    customErrorHandler, 
+    serverErrorHandler 
+} = require("./errors")
 
 const app = express()
 
 app.get('/api', getApi)
 app.get('/api/topics', getTopics)
 app.get('/api/articles/:article_id', getArticle)
+app.get('/api/articles', getArticles)
 
-
-app.use((err, req, res, next) => {
-    console.log(err, "<---error in 1st app.use")
-    if (err.status && err.msg) {
-        res.status(err.status).send({ msg: err.msg })
-    } else {
-        next(err)
-    }
+app.all("*", (req, res) => {
+    res.status(404).send({ msg: "Endpoint not found" })
 })
 
-app.use((err, req, res, next) => {
-    console.log(err.code, "err.code in 2nd app.use")
-    if (err.code === "22P02") {
-        res.status(400).send({ msg: "Bad request" })
-    } else {
-        next(err)
-    }
-})
-
-app.use((err, req, res, next) => {
-    res.status(500).send({ msg: 'Internal server error'})
-})
+//app.all(endpointErrorHandler)
+app.use(postgresErrorHandler)
+app.use(customErrorHandler)
+app.use(serverErrorHandler)
 
 module.exports = app;
