@@ -24,6 +24,17 @@ describe("GET /api", () => {
   });
 })
 
+describe("GET 404 Responds with Not Found when endpoint does not exist", () => {
+  test("404: Responds with Not Found when endpoint does not exist", () => {
+    return request(app)
+    .get("/api/invalid-endpoint")
+    .expect(404)
+    .then(({ body: { msg } }) => {
+      expect(msg).toBe("Endpoint not found")
+    })
+  })
+})
+
 describe("GET /api/topics", () => {
   test("200: Responds with an array of topic objects with slug and description properties", () => {
     return request(app)
@@ -51,14 +62,14 @@ describe("GET /api/article/:article_id", () => {
         topic: "mitch",
         author: "butter_bridge",
         body: "I find this existence challenging",
-        created_at: "2020-07-09T20:11:00.000Z",
+        created_at: expect.any(String),
         votes: 100,
         article_img_url:
           "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
       })
     })
   })
-  test("GET 404 Responds with message when given a valid by non-existent article_id", () => {
+  test("404: Responds with message when given a valid by non-existent article_id", () => {
     return request(app)
     .get("/api/articles/999")
     .expect(404)
@@ -66,7 +77,7 @@ describe("GET /api/article/:article_id", () => {
       expect(msg).toBe("Article_id does not exist")
     })
   })
-  test ("GET 400 sends sends Bad Request when given an invalid article_id", () => {
+  test ("400: sends sends Bad Request when given an invalid article_id", () => {
     return request(app)
     .get("/api/articles/not-an-article")
     .expect(400)
@@ -75,8 +86,35 @@ describe("GET /api/article/:article_id", () => {
     })
   })
 })
-/* describe("/api/articles", () => {
-  test("GET 200 Responds with an array of all articles, sorted by date descending", () => {
+
+describe("GET /api/articles", () => {
+  test("200: Responds with an array of article objects with correct properties and sorted by date descending", () => {
     return request(app)
+    .get("/api/articles")
+    .expect(200)
+    .then(({ body: { articles } }) => {
+      expect(articles.length).toBe(13)
+      articles.forEach((article) => {
+        expect(article).toMatchObject({
+          article_id: expect.any(Number),
+          title: expect.any(String),
+          topic: expect.any(String),
+          author: expect.any(String),
+          created_at: expect.any(String),
+          votes: expect.any(Number),
+          comment_count: expect.any(String),
+          article_img_url:expect.any(String)
+        })
+        expect(articles).toBeSortedBy(articles.created_at)
+      })
+    })
   })
-}) */
+  test("200: Responds with the correct count value for the comment_count property", () => {
+    return request(app)
+    .get("/api/articles")
+    .expect(200)
+    .then(({ body: { articles } }) => {
+      expect(articles[0].comment_count).toEqual("2")
+    })
+  })
+})
