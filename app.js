@@ -20,6 +20,10 @@ const {
     deleteComment
 } = require('./controllers/comments.controller')
 
+const {
+    getUsers
+} = require('./controllers/users.controller')
+
 const { 
     postgresErrorHandler, 
     customErrorHandler, 
@@ -35,6 +39,7 @@ app.get('/api/topics', getTopics)
 app.get('/api/articles/:article_id', getArticle)
 app.get('/api/articles', getArticles)
 app.get('/api/articles/:article_id/comments', getComments)
+app.get('/api/users', getUsers)
 app.post('/api/articles/:article_id/comments', postComment)
 app.patch('/api/articles/:article_id', patchArticle)
 app.delete('/api/comments/:comment_id', deleteComment)
