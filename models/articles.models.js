@@ -9,10 +9,21 @@ exports.fetchArticle = (article_id) => {
     })
 }
 
-exports.fetchArticles = () => {
+exports.fetchArticles = (sortBy, orderBy) => {
+    const validSort = ["title", "topic", "author", "body", "created_at", "votes", "article_img_url"]
+    const validOrder = ["asc", "desc"]
+    if (!validSort.includes(sortBy) || !validOrder.includes(orderBy)) {
+        return Promise.reject({
+            status: 400,
+            msg: "Bad request"
+        })
+    }
     let sqlQuery = 
-    "SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, COUNT(comments.article_id) AS comment_count, articles.article_img_url FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id GROUP BY 1 ORDER BY articles.created_at DESC "
+    "SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, COUNT(comments.article_id) AS comment_count, articles.article_img_url FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id GROUP BY 1 "
     const queryValues = []
+
+    sqlQuery += `ORDER BY articles.${sortBy} ${orderBy}`
+
     return db.query(sqlQuery, queryValues).then(( { rows }) => {
         return rows;
     })
