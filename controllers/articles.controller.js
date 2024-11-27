@@ -1,9 +1,8 @@
 const {
     fetchArticle,
     fetchArticles,
-    fetchComments,
-    checkArticleExists,
-    insertComment
+    insertVotes,
+    checkArticleExists
 } = require('../models/articles.models')
 
 exports.getArticle = (req, res, next) => {
@@ -21,34 +20,17 @@ exports.getArticles = (req, res, next) => {
     .catch(next)
 }
 
-exports.getComments = (req, res, next) => {
-    const { article_id } = req.params
-    const promises = [fetchComments(article_id)]
-    if(article_id) {
-        promises.push(checkArticleExists(article_id))
-    }
-    Promise.all(promises)
-    .then(([comments]) => {
-        res.status(200).send({ comments })
-    })
-    .catch(next)
-}
-
-exports.postComment = (req, res, next) => {
+exports.patchArticle = (req, res, next) => {
     const { article_id } = req.params
     const { body } = req
-    const promises = [insertComment(article_id, body)]
+    const promises = [insertVotes(article_id, body)]
     if (article_id) {
         promises.push(checkArticleExists(article_id))
     }
     
     Promise.all(promises)
-    .then(([comment]) => {
-        console.log(comment, "<---comment in promise")
-        res.status(201).send({ comment })
+    .then(([article]) => {
+        res.status(200).send({ article })
     })
-/*     insertComment(article_id, body).then((comment) => {
-        res.status(201).send({ comment })
-    }) */
     .catch(next)
 }
