@@ -73,11 +73,13 @@
     },
     "exampleResponse": 
     {
-      "author": "icellusedkars",
-      "body": "Shenanigans" ,
-      "article_id": 1,
-      "votes": 0,
-      "created_at": "2018-05-30T15:59:13.341Z"
+      "comment": {
+        "author": "icellusedkars",
+        "body": "Shenanigans" ,
+        "article_id": 1,
+        "votes": 0,
+        "created_at": "2018-05-30T15:59:13.341Z"
+      }
     }
   },
   "PATCH /api/articles/:article_id/" :{
@@ -113,5 +115,18 @@
   "DELETE /api/comments/:comment_id" :{
     "description": "deletes a comment when passed a comment_id number, responds with 204 and no content",
     "queries": ["comment_id"]
+  },
+  "GET /api/users": {
+    "description": "serves an array of all users",
+    "queries": [],
+    "exampleResponse": {
+      "users": [
+        {
+          "username": "butter_bridge",
+          "name": "jonny",
+          "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
+        }
+      ]
+    }
   }
 }
