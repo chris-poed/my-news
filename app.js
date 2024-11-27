@@ -2,12 +2,16 @@ const express = require("express")
 const  { 
     getApi,
     getTopics,
-    getArticle,
-    getArticles,
-    getComments
 } = require('./controllers/api.controller')
 
-const { //endpointErrorHandler, 
+const  { 
+    getArticle,
+    getArticles,
+    getComments,
+    postComment
+} = require('./controllers/articles.controller')
+
+const { 
     postgresErrorHandler, 
     customErrorHandler, 
     serverErrorHandler 
@@ -15,11 +19,14 @@ const { //endpointErrorHandler,
 
 const app = express()
 
+app.use(express.json())
+
 app.get('/api', getApi)
 app.get('/api/topics', getTopics)
 app.get('/api/articles/:article_id', getArticle)
 app.get('/api/articles', getArticles)
 app.get('/api/articles/:article_id/comments', getComments)
+app.post('/api/articles/:article_id/comments', postComment)
 
 app.all("*", (req, res) => {
     res.status(404).send({ msg: "Endpoint not found" })
