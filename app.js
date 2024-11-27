@@ -7,9 +7,13 @@ const  {
 const  { 
     getArticle,
     getArticles,
+    patchArticle
+} = require('./controllers/articles.controller')
+
+const {
     getComments,
     postComment
-} = require('./controllers/articles.controller')
+} = require('./controllers/comments.controller')
 
 const { 
     postgresErrorHandler, 
@@ -27,6 +31,7 @@ app.get('/api/articles/:article_id', getArticle)
 app.get('/api/articles', getArticles)
 app.get('/api/articles/:article_id/comments', getComments)
 app.post('/api/articles/:article_id/comments', postComment)
+app.patch('/api/articles/:article_id', patchArticle)
 
 app.all("*", (req, res) => {
     res.status(404).send({ msg: "Endpoint not found" })
