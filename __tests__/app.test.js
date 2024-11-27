@@ -77,7 +77,7 @@ describe("GET /api/article/:article_id", () => {
       expect(msg).toBe("Article_id does not exist")
     })
   })
-  test ("400: sends sends Bad Request when given an invalid article_id", () => {
+  test ("400: Responds with Bad Request when given an invalid article_id", () => {
     return request(app)
     .get("/api/articles/not-an-article")
     .expect(400)
@@ -153,6 +153,54 @@ describe("GET /api/articles/:article_id/comments", () => {
     .expect(404)
     .then(({ body: { msg } }) => {
       expect(msg).toBe("Article_id does not exist")
+    })
+  })
+})
+
+describe("POST /api/articles/:article_id/comments", () => {
+  test("201: Inserts a new comment with username and body properties, and responds with the posted comment", () => {
+    const newComment = {
+      user: "icellusedkars",
+      body: "Shenanigans" 
+    }
+    return request(app)
+    .post("/api/articles/1/comments")
+    .send(newComment)
+    .expect(201)
+    .then(({ body: { comment } }) => {
+      expect(comment).toMatchObject({
+        author: "icellusedkars",
+        body: "Shenanigans" ,
+        article_id: 1,
+        votes: 0,
+        created_at: expect.any(String)
+      })
+    })
+  })
+  test("404: Responds with message when given a valid but non-existent article_id", () => {
+    const newComment = {
+      user: "icellusedkars",
+      body: "Shenanigans" 
+    }
+    return request(app)
+    .post("/api/articles/998/comments")
+    .send(newComment)
+    .expect(404)
+    .then(({ body: { msg } }) => {
+      expect(msg).toBe("Article_id does not exist")
+    })
+  })
+  test("400: Responds with Bad Request when given an invalid article_id", () => {
+    const newComment = {
+      user: "icellusedkars",
+      body: "Shenanigans" 
+    }
+    return request(app)
+    .post("/api/articles/not-an-article/comments")
+    .send(newComment)
+    .expect(400)
+    .then(({ body: { msg } }) => {
+      expect(msg).toBe("Bad request")
     })
   })
 })
