@@ -2,8 +2,11 @@ const {
     fetchArticle,
     fetchArticles,
     insertVotes,
-    checkArticleExists
 } = require('../models/articles.models')
+
+const {
+    checkArticleExists
+} = require('../models/utils.models')
 
 exports.getArticle = (req, res, next) => {
     const { article_id } = req.params

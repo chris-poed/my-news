@@ -133,7 +133,7 @@ describe("GET /api/articles/:article_id/comments", () => {
           created_at: expect.any(String),
           author: expect.any(String),
           body: expect.any(String),
-          article_id: expect.any(Number)
+          article_id: 1
         })
         expect(comments).toBeSortedBy("created_at", { descending: true })
       })
@@ -153,6 +153,14 @@ describe("GET /api/articles/:article_id/comments", () => {
     .expect(404)
     .then(({ body: { msg } }) => {
       expect(msg).toBe("Article_id does not exist")
+    })
+  })
+  test("400: Responds with Bad Request when given an invalid article_id", () => {
+    return request(app)
+    .get("/api/articles/not-an-article/comments")
+    .expect(400)
+    .then(({ body: { msg } }) => {
+      expect(msg).toBe("Bad request")
     })
   })
 })
@@ -261,6 +269,21 @@ describe("PATCH /api/articles/:article_id", () => {
     return request(app)
     .patch("/api/articles/not-an-article")
     .send(newVoteCount)
+    .expect(400)
+    .then(({ body: { msg } }) => {
+      expect(msg).toBe("Bad request")
+    })
+  })
+})
+describe("DELETE /api/comments/:comment_id", () => {
+  test("204: Deletes comment and provides no response", () => {
+    return request(app)
+    .delete("/api/comments/1")
+    .expect(204)
+  })
+  test("400: Responds with Bad Request when given an invalid comment_id", () => {
+    return request(app)
+    .delete("/api/comments/not-a-comment")
     .expect(400)
     .then(({ body: { msg } }) => {
       expect(msg).toBe("Bad request")
