@@ -1,8 +1,12 @@
 const express = require("express")
+
 const  { 
     getApi,
-    getTopics,
 } = require('./controllers/api.controller')
+
+const  { 
+    getTopics,
+} = require('./controllers/topics.controller')
 
 const  { 
     getArticle,
@@ -12,7 +16,8 @@ const  {
 
 const {
     getComments,
-    postComment
+    postComment,
+    deleteComment
 } = require('./controllers/comments.controller')
 
 const { 
@@ -32,6 +37,7 @@ app.get('/api/articles', getArticles)
 app.get('/api/articles/:article_id/comments', getComments)
 app.post('/api/articles/:article_id/comments', postComment)
 app.patch('/api/articles/:article_id', patchArticle)
+app.delete('/api/comments/:comment_id', deleteComment)
 
 app.all("*", (req, res) => {
     res.status(404).send({ msg: "Endpoint not found" })
