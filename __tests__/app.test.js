@@ -275,6 +275,7 @@ describe("PATCH /api/articles/:article_id", () => {
     })
   })
 })
+
 describe("DELETE /api/comments/:comment_id", () => {
   test("204: Deletes comment and provides no response", () => {
     return request(app)
@@ -287,6 +288,24 @@ describe("DELETE /api/comments/:comment_id", () => {
     .expect(400)
     .then(({ body: { msg } }) => {
       expect(msg).toBe("Bad request")
+    })
+  })
+})
+
+describe("GET /api/users", () => {
+  test("200: Responds with an array of user objects with username, name, and avatar_url properties", () => {
+    return request(app)
+    .get("/api/users")
+    .expect(200)
+    .then(({ body: { users } }) => {
+      expect(users.length).toBe(4)
+      users.forEach((user) => {
+        expect(user).toMatchObject({
+          username: expect.any(String),
+          name: expect.any(String),
+          avatar_url: expect.any(String)
+        })
+      })
     })
   })
 })
