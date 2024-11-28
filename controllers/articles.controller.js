@@ -36,10 +36,8 @@ exports.patchArticle = (req, res, next) => {
     const { article_id } = req.params
     const { body } = req
     const promises = [insertVotes(article_id, body)]
-    if (article_id) {
-        promises.push(checkArticleExists(article_id))
-    }
-    
+    promises.push(checkArticleExists(article_id))
+
     Promise.all(promises)
     .then(([article]) => {
         res.status(200).send({ article })
