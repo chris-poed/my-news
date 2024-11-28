@@ -5,7 +5,8 @@ const {
 } = require('../models/articles.models')
 
 const {
-    checkArticleExists
+    checkArticleExists,
+    checkTopicExists
 } = require('../models/utils.models')
 
 exports.getArticle = (req, res, next) => {
@@ -18,8 +19,14 @@ exports.getArticle = (req, res, next) => {
 
 exports.getArticles = (req, res, next) => {
     const sortBy = req.query.sort_by || "created_at"
-    const orderBy = req.query.order || "desc"
-    fetchArticles(sortBy, orderBy).then((articles) => {
+    const orderBy = req.query.order || "DESC"
+    const topic = req.query.topic
+    const promises = [fetchArticles(sortBy, orderBy, topic)]
+    if (topic) {
+        promises.push(checkTopicExists(topic))
+    }
+    Promise.all(promises)
+    .then(([articles]) => {
         res.status(200).send({ articles })
     })
     .catch(next)

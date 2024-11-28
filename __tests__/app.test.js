@@ -211,6 +211,32 @@ describe("POST /api/articles/:article_id/comments", () => {
       expect(msg).toBe("Bad request")
     })
   })
+  test("404: Responds with Invalid Username when username does not exist", () => {
+    const newComment = {
+      user: "not-a-username",
+      body: "Shenanigans" 
+    }
+    return request(app)
+    .post("/api/articles/1/comments")
+    .send(newComment)
+    .expect(404)
+    .then(({ body: { msg } }) => {
+      expect(msg).toBe("Invalid username")
+    })
+  })
+  test("422: Responds with Unprocessable Entity when body does not contain correct property keys", () => {
+    const newComment = {
+      notUser: "icellusedkars",
+      notBody: "Shenanigans" 
+    }
+    return request(app)
+    .post("/api/articles/1/comments")
+    .send(newComment)
+    .expect(422)
+    .then(({ body: { msg } }) => {
+      expect(msg).toBe("Unprocessable entity")
+    })
+  })
 })
 
 describe("PATCH /api/articles/:article_id", () => {
@@ -388,6 +414,45 @@ describe("GET /api/articles/:sort_by?/:order_by?", () => {
     .expect(400)
     .then(({ body: { msg } }) => {
       expect(msg).toBe("Bad request")
+    })
+  })
+})
+
+describe("GET /api/articles/:topic?", () => {
+  test("200: Responds with array of articles filtered by topic", () => {
+    return request(app)
+    .get("/api/articles?topic=mitch")
+    .expect(200)
+    .then(({ body: { articles } }) => {
+      expect(articles.length).toBe(12)
+      articles.forEach((article) => {
+        expect(article).toMatchObject({
+          article_id: expect.any(Number),
+          title: expect.any(String),
+          topic: "mitch",
+          author: expect.any(String),
+          created_at: expect.any(String),
+          votes: expect.any(Number),
+          comment_count: expect.any(String),
+          article_img_url:expect.any(String)
+        })
+      })
+    })
+  })
+  test("200: Responds with an empty array if passed a valid topic with no articles", () => {
+    return request(app)
+    .get("/api/articles?topic=paper")
+    .expect(200)
+    .then(({ body: { articles } }) => {
+      expect(articles.length).toBe(0)
+    })
+  })
+  test("404: Responds with Topic Not Found if topic doesnt exist", () => {
+    return request(app)
+    .get("/api/articles?topic=topic-doesnt-exist")
+    .expect(404)
+    .then(({ body: { msg } }) => {
+      expect(msg).toBe("Topic not found")
     })
   })
 })
