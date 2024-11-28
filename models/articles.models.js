@@ -9,9 +9,9 @@ exports.fetchArticle = (article_id) => {
     })
 }
 
-exports.fetchArticles = (sortBy, orderBy) => {
+exports.fetchArticles = (sortBy, orderBy, topic) => {
     const validSort = ["title", "topic", "author", "body", "created_at", "votes", "article_img_url"]
-    const validOrder = ["asc", "desc"]
+    const validOrder = ["ASC", "DESC"]
     if (!validSort.includes(sortBy) || !validOrder.includes(orderBy)) {
         return Promise.reject({
             status: 400,
@@ -19,12 +19,19 @@ exports.fetchArticles = (sortBy, orderBy) => {
         })
     }
     let sqlQuery = 
-    "SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, COUNT(comments.article_id) AS comment_count, articles.article_img_url FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id GROUP BY 1 "
+    "SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, COUNT(comments.article_id) AS comment_count, articles.article_img_url FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id "
     const queryValues = []
 
-    sqlQuery += `ORDER BY articles.${sortBy} ${orderBy}`
+    if (topic) {
+        sqlQuery += `WHERE articles.topic = $1 `
+        queryValues.push(topic)
+    }
 
-    return db.query(sqlQuery, queryValues).then(( { rows }) => {
+    sqlQuery += `GROUP BY 1 `
+
+    sqlQuery += `ORDER BY articles.${sortBy} ${orderBy} `
+
+    return db.query(sqlQuery, queryValues).then(({ rows }) => {
         return rows;
     })
 }
