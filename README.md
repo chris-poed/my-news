@@ -44,7 +44,7 @@ Or, follow the steps below to set up a local repo.
 
 ##### 4. Add both `.env.test` and `.env.development` files
 
-    Files must be in the root directory of the project, with `PGDATABASE=<database_name>` and `PGDATABASE=<database_name>_test` in the respective files.
+Files must be in the root directory of the project, with `PGDATABASE=<database_name>` and `PGDATABASE=<database_name>_test` in the respective files.
 
 ##### 5. Run test suites
 
