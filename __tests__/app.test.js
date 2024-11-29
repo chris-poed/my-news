@@ -69,6 +69,43 @@ describe("GET /api/article/:article_id", () => {
       })
     })
   })
+  test("200: Comment_count property has the correct count of each comment of the passed article_id", () => {
+    return request(app)
+    .get("/api/articles/1")
+    .expect(200)
+    .then(({ body: { article } }) => {
+      expect(article).toMatchObject({
+        article_id: 1,
+        title: "Living in the shadow of a great man",
+        topic: "mitch",
+        author: "butter_bridge",
+        body: "I find this existence challenging",
+        created_at: expect.any(String),
+        votes: 100,
+        comment_count: "11",
+        article_img_url:
+          "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+      })
+    })
+  })
+  test("200: Comment_count property returns 0 when no comments are found for the passed article_id", () => {
+    return request(app)
+    .get("/api/articles/7")
+    .expect(200)
+    .then(({ body: { article } }) => {
+      expect(article).toMatchObject({
+        article_id: 7,
+        title: "Z",
+        topic: "mitch",
+        author: "icellusedkars",
+        body: "I was hungry.",
+        created_at: expect.any(String),
+        comment_count: "0",
+        article_img_url:
+          "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"
+      })
+    })
+  })
   test("404: Responds with message when given a valid by non-existent article_id", () => {
     return request(app)
     .get("/api/articles/999")
@@ -337,7 +374,7 @@ describe("GET /api/users", () => {
 })
 
 describe("GET /api/articles/:sort_by?/:order_by?", () => {
-  test("200: Responds with an array of articles sorted by passed parameter", () => {
+  test("200: Responds with an array of articles sorted by passed query", () => {
     return request(app)
     .get("/api/articles?sort_by=votes")
     .expect(200)
@@ -358,7 +395,7 @@ describe("GET /api/articles/:sort_by?/:order_by?", () => {
       expect(articles).toBeSortedBy("votes", { descending: true })
     })
   })
-  test("200: Responds with an array of articles sorted by passed parameter and ascending order", () => {
+  test("200: Responds with an array of articles sorted by passed query and ascending order", () => {
     return request(app)
     .get("/api/articles?sort_by=title&order_by=asc")
     .expect(200)
@@ -379,7 +416,7 @@ describe("GET /api/articles/:sort_by?/:order_by?", () => {
       expect(articles).toBeSortedBy("title", { coerce: true })
     })
   })
-  test("200: Responds with array sorted by created_at and ordered by descending as default when no parameter passed", () => {
+  test("200: Responds with array sorted by created_at and ordered by descending as default when no query passed", () => {
     return request(app)
     .get("/api/articles")
     .expect(200)
@@ -400,7 +437,7 @@ describe("GET /api/articles/:sort_by?/:order_by?", () => {
       expect(articles).toBeSortedBy("created_at", { descending: true })
     })
   })
-  test("400: Responds with Bad Request if passed an invalid sort_by parameter", () => {
+  test("400: Responds with Bad Request if passed an invalid sort_by query", () => {
     return request(app)
     .get("/api/articles?sort_by=not-a-valid-sort")
     .expect(400)
@@ -408,7 +445,7 @@ describe("GET /api/articles/:sort_by?/:order_by?", () => {
       expect(msg).toBe("Bad request")
     })
   })
-  test("400: Responds with Bad Request if passed an invalid order_by parameter", () => {
+  test("400: Responds with Bad Request if passed an invalid order_by query", () => {
     return request(app)
     .get("/api/articles?sort_by=created_at?order_by=not-a-valid-order-by")
     .expect(400)
