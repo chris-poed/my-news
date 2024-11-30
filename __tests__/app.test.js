@@ -517,3 +517,60 @@ describe("GET /api/users/:username", () => {
     })
   })
 })
+
+describe("PATCH /api/comment/:comment_id", () => {
+  test("200: Updates the votes property with a new vote count and responds with the updated comment", () => {
+    const newVoteCount = { inc_votes: 4 }
+    return request(app)
+    .patch("/api/comments/1")
+    .send(newVoteCount)
+    .expect(200)
+    .then(({ body: { comment } }) => {
+      expect(comment).toMatchObject({
+        comment_id: 1,
+        body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+        votes: 20,
+        author: "butter_bridge",
+        article_id: 9,
+        created_at: expect.any(String)
+      })
+    })
+  })
+  test("200: Updates the votes property correctly when passed a negative number", () => {
+    const newVoteCount = { inc_votes: -36 }
+    return request(app)
+    .patch("/api/comments/1")
+    .send(newVoteCount)
+    .expect(200)
+    .then(({ body: { comment } }) => {
+      expect(comment).toMatchObject({
+        comment_id: 1,
+        body: "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+        votes: -20,
+        author: "butter_bridge",
+        article_id: 9,
+        created_at: expect.any(String)
+      })
+    })
+  })
+  test("404: Responds with message when given a valid but non-existent comment_id", () => {
+    const newVoteCount = { inc_votes: 5 }
+    return request(app)
+    .patch("/api/comments/999")
+    .send(newVoteCount)
+    .expect(404)
+    .then(({ body: { msg } }) => {
+      expect(msg).toBe("Comment_id does not exist")
+    })
+  })
+  test("400: Responds with Bad Request when given an invalid comment_id", () => {
+    const newVoteCount = { inc_votes: -36  }
+    return request(app)
+    .patch("/api/comments/not-a-comment")
+    .send(newVoteCount)
+    .expect(400)
+    .then(({ body: { msg } }) => {
+      expect(msg).toBe("Bad request")
+    })
+  })
+})
