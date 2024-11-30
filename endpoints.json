@@ -117,6 +117,21 @@
     "description": "deletes a comment when passed a comment_id number, responds with 204 and no content",
     "queries": ["comment_id"]
   },
+  "PATCH /api/comments/:comment_id/" :{
+    "description": "updates the vote property by the newVote value, with newVote indicating the increment or decrement of the current vote count",
+    "queries": ["comment_id"],
+    "exampleBodyIncrement": { "inc_votes": 5 }, 
+    "exampleBodyDecrement": { "inc_votes": -42 },
+    "exampleResponse": 
+    {
+      "comment_id": 1,
+      "body": "Oh, I've got compassion running out of my nose, pal! I'm the Sultan of Sentiment!",
+      "votes": 25,
+      "author": "butter_bridge",
+      "article_id": 9,
+      "created_at": "expect.any(String)"
+    }
+  },
   "GET /api/users": {
     "description": "serves an array of all users",
     "queries": [],
@@ -128,6 +143,15 @@
           "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
         }
       ]
+    }
+  },
+  "GET /api/users/:username": {
+    "description": "serves a user object when passed a valid username",
+    "queries": [],
+    "exampleResponse": {
+        "username": "butter_bridge",
+        "name": "jonny",
+        "avatar_url": "https://www.healthytherapies.com/wp-content/uploads/2016/06/Lime3.jpg"
     }
   }
 }

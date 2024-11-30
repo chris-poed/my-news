@@ -21,3 +21,11 @@ exports.removeComment = (comment_id) => {
         return rows[0]
     })
 }
+
+exports.insertCommentVotes = (comment_id, body) => {
+    const queryValues = [body.inc_votes, comment_id]
+    return db.query(`UPDATE comments SET votes = votes + $1 WHERE comment_id = $2 RETURNING *;`, queryValues)
+    .then(( { rows }) => {
+        return rows[0]
+    })
+}
