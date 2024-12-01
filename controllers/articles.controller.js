@@ -2,6 +2,7 @@ const {
     fetchArticle,
     fetchArticles,
     insertVotes,
+    insertArticle
 } = require('../models/articles.models')
 
 const {
@@ -40,6 +41,14 @@ exports.patchArticle = (req, res, next) => {
 
     Promise.all(promises)
     .then(([article]) => {
+        res.status(200).send({ article })
+    })
+    .catch(next)
+}
+
+exports.postArticle = (req, res, next) => {
+    const { body } = req
+    insertArticle(body).then((article) => {
         res.status(200).send({ article })
     })
     .catch(next)
