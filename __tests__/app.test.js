@@ -562,3 +562,41 @@ describe("PATCH /api/comment/:comment_id", () => {
       });
   });
   test("400: Responds with Bad Request when given an invalid comment_id", () => {
+      const newVoteCount = { inc_votes: -36 };
+      return request(app)
+        .patch("/api/comments/not-a-comment")
+        .send(newVoteCount)
+        .expect(400)
+        .then(({ body: { msg } }) => {
+          expect(msg).toBe("Bad request");
+        });
+    });
+});
+    /* describe.todo("POST /api/articles", () => {
+  test.todo("201: Inserts a new article, and responds with the posted article", () => {
+    const newArticle = {
+        author: "butter_bridge",
+        title: "a new article",
+        body: "this is a new article body, it has a bit of text, a bit of this, a bit of that.",
+        topic: "mitch",
+        article_img_url: "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700"  
+    }
+    return request(app)
+    .post("/api/articles/1/comments")
+    .send(newArticle)
+    .expect(201)
+    .then(({ body: { article } }) => {
+      expect(article).toMatchObject({
+        article_id: expect.any(Number),
+        author: "butter_bridge",
+        title: "a new article",
+        body: "this is a new article body, it has a bit of text, a bit of this, a bit of that.",
+        topic: "mitch",
+        article_img_url: "https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700",
+        votes: expect.any(Number),
+        created_at: expect.any(String),
+        comment_count: expect.any(Number)
+      })
+    })
+  })
+}) */
