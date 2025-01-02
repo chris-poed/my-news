@@ -1,4 +1,5 @@
-const db = require('../db/connection')
+const db = require('../db/connection');
+const { articleData } = require('../db/data/test-data');
 
 exports.fetchArticle = (article_id) => {
 
@@ -42,6 +43,13 @@ exports.insertVotes = (article_id, body) => {
     const queryValues = [body.inc_votes, article_id]
     return db.query(`UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *;`, queryValues)
     .then(( { rows }) => {
+        return rows[0]
+    })
+}
+
+exports.insertArticle = (body) => {
+    const queryValues = [body]
+    return db.query(`INSERT INTO articles (author, title, body, topic, article_img_url) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`, queryValues).then(({ rows }) => {
         return rows[0]
     })
 }

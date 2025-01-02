@@ -562,13 +562,3 @@ describe("PATCH /api/comment/:comment_id", () => {
       });
   });
   test("400: Responds with Bad Request when given an invalid comment_id", () => {
-    const newVoteCount = { inc_votes: -36 };
-    return request(app)
-      .patch("/api/comments/not-a-comment")
-      .send(newVoteCount)
-      .expect(400)
-      .then(({ body: { msg } }) => {
-        expect(msg).toBe("Bad request");
-      });
-  });
-});

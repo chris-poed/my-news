@@ -3,7 +3,8 @@ const articlesRouter = require("express").Router();
 const  { 
     getArticle,
     getArticles,
-    patchArticle
+    patchArticle,
+    postArticle
 } = require('../controllers/articles.controller');
 
 const {
@@ -15,6 +16,7 @@ articlesRouter
 .route('/')
 .get(getArticles)
 .patch(patchArticle)
+.post(postArticle)
 
 articlesRouter
 .route('/:article_id')
