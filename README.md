@@ -1,6 +1,6 @@
 # My News API
 
-Welcome to My News, a RESTful API built using **Node.js**, **PostgreSQL**, and **Express** to be used as the backend service for an interactive news site such as [Reddit](https://www.reddit.com/ "Reddit") or [DIGG](https://www.reddit.com/r/explainlikeimfive/comments/3bzibi/eli5_what_happened_to_digg/?rdt=62868 "So what happenened to DIGG?"). The API enables fetching of articles, topics, comments and users with additional queries for some endpoints, and has a full relational database seeded with test and development data.
+Welcome to My News API, a RESTful API built using **Node.js**, **PostgreSQL**, and **Express** to be used as the backend service for an interactive news site such as [Reddit](https://www.reddit.com/ "Reddit") or [DIGG](https://www.reddit.com/r/explainlikeimfive/comments/3bzibi/eli5_what_happened_to_digg/?rdt=62868 "So what happenened to DIGG?"). The API enables fetching of articles, topics, comments and users with additional queries for some endpoints, and has a full relational database seeded with test and development data.
 
 **[Check out the hosted version on Render here](https://my-news-2.onrender.com/api/ "My News API hosted on Render")** 
 
