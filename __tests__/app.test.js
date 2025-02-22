@@ -414,6 +414,31 @@ describe("GET /api/articles/:sort_by?/:order_by?", () => {
         expect(articles).toBeSortedBy("title", { coerce: true });
       });
   });
+
+  test("200: Responds with an array of articles sorted by comment_count and descending order", () => {
+    return request(app)
+      .get("/api/articles?sort_by=comment_count")
+      .expect(200)
+      .then(({ body: { articles } }) => {
+        expect(articles.length).toBe(13);
+        articles.forEach((article) => {
+          expect(article).toMatchObject({
+            article_id: expect.any(Number),
+            title: expect.any(String),
+            topic: expect.any(String),
+            author: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            comment_count: expect.any(String),
+            article_img_url: expect.any(String),
+          });
+        });
+        expect(articles).toBeSortedBy("comment_count", {
+          coerce: true,
+          descending: true,
+        });
+      });
+  });
   test("200: Responds with array sorted by created_at and ordered by descending as default when no query passed", () => {
     return request(app)
       .get("/api/articles")
@@ -562,17 +587,17 @@ describe("PATCH /api/comment/:comment_id", () => {
       });
   });
   test("400: Responds with Bad Request when given an invalid comment_id", () => {
-      const newVoteCount = { inc_votes: -36 };
-      return request(app)
-        .patch("/api/comments/not-a-comment")
-        .send(newVoteCount)
-        .expect(400)
-        .then(({ body: { msg } }) => {
-          expect(msg).toBe("Bad request");
-        });
-    });
+    const newVoteCount = { inc_votes: -36 };
+    return request(app)
+      .patch("/api/comments/not-a-comment")
+      .send(newVoteCount)
+      .expect(400)
+      .then(({ body: { msg } }) => {
+        expect(msg).toBe("Bad request");
+      });
+  });
 });
-    /* describe.todo("POST /api/articles", () => {
+/* describe.todo("POST /api/articles", () => {
   test.todo("201: Inserts a new article, and responds with the posted article", () => {
     const newArticle = {
         author: "butter_bridge",
